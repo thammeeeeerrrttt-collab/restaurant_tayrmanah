@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volledig Menu | Tayrmanah</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">TAYRMANAH</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html" class="active">Menu</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div id="cart-icon" onclick="openCart()" style="position:fixed; bottom:20px; right:20px; background:#ff9800; color:white; padding:15px; border-radius:50%; cursor:pointer; z-index:1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        🛒 <span id="cart-count">0</span>
+    </div>
+
+    <div id="cart-container" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:25px; border-radius:15px; box-shadow:0 0 30px rgba(0,0,0,0.6); z-index:2000; width:90%; max-width:400px; color:#333; direction:ltr;">
+    <h3 style="text-align:center; color:#d35400; margin-top:0;">Order Summary</h3>
+
+    <div id="cart-items-list" style="max-height:150px; overflow-y:auto; margin:15px 0; border-bottom:2px solid #eee; padding-bottom:10px;"></div>
+
+    <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px; font-weight:bold;">Table Number:</label>
+        <input type="number" id="table-number" placeholder="e.g. 5"
+            style="width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px; box-sizing:border-box;">
+
+        <label style="display:block; margin-bottom:5px; font-weight:bold;">Special Notes:</label>
+        <textarea id="order-notes" placeholder="e.g. No onion, extra spicy..."
+            style="width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; height:50px; resize:none; box-sizing:border-box;"></textarea>
+    </div>
+
+    <p style="font-size:1.2rem; font-weight:bold; text-align:center;">
+        Total: <span id="cart-total">0.00</span> €
+    </p>
+
+    <button onclick="sendToWhatsApp()"
+        style="background:#25D366; color:white; width:100%; padding:12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; margin-bottom:10px; font-size:1rem;">
+        Send via WhatsApp 💬
+    </button>
+
+    <button onclick="generatePDF()"
+        style="background:#007bff; color:white; width:100%; padding:10px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; margin-bottom:10px;">
+        Download Receipt (PDF) 📄
+    </button>
+
+    <button onclick="closeCart()"
+        style="background:#666; color:white; width:100%; padding:8px; border:none; border-radius:5px; cursor:pointer;">
+        Close
+    </button>
+</div>
+
+    <div class="container">
+        <h1 class="reveal" style="margin-bottom: 50px;">Onze Kaart</h1>
+
+        <h2 class="category-title reveal">MEAT DISHES</h2>
+        <div class="grid">
+            <div class="card reveal"><img src="mandi-meat.jpg"><div class="card-info-detailed"><h3>Mandi Meat</h3><p>Traditioneel langzaam gegaard lamsvlees in een ondergrondse oven, geserveerd met rijst.</p><span>€19.00</span><br><button class="order-btn" onclick="addToCart('Mandi Meat', 19.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="madfoon-meat.jpg"><div class="card-info-detailed"><h3>Madfoon Meat</h3><p>Mals lamsvlees gekruid en strak verpakt in folie, gegaard unter hoge druk.</p><span>€19.00</span><br><button class="order-btn" onclick="addToCart('Madfoon Meat', 19.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="haneeth-meat.jpg"><div class="card-info-detailed"><h3>Haneeth Meat</h3><p>Lamsvlees gegaard met speciale kruiden tot het boterzacht is.</p><span>€19.00</span><br><button class="order-btn" onclick="addToCart('Haneeth Meat', 19.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="fahsa.jpg"><div class="card-info-detailed"><h3>Fahsa</h3><p>Hartige stoofpot van lamsvlees, kokend geserveerd in een stenen pot met vers brood.</p><span>€15.00</span><br><button class="order-btn" onclick="addToCart('Fahsa', 15.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="bourma.jpg"><div class="card-info-detailed"><h3>Bourma Meat</h3><p>Lamsvlees gekookt in een rijke bouillon met groenten, puur en voedzaam.</p><span>€19.00</span><br><button class="order-btn" onclick="addToCart('Bourma Meat', 19.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+        </div>
+
+        <h2 class="category-title reveal">CHICKEN DISHES</h2>
+        <div class="grid">
+            <div class="card reveal"><img src="mandi-chicken.jpg"><div class="card-info-detailed"><h3>Mandi Chicken</h3><p>Gegrilde kip met een authentieke rokerige smaak uit de Mandi-oven, geserveerd met rijst.</p><span>€17.00</span><br><button class="order-btn" onclick="addToCart('Mandi Chicken', 17.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="madfoon-chicken.jpg"><div class="card-info-detailed"><h3>Madfoon chicken</h3><p>Gekruide kip, zacht gestoomd in folie om alle sappen te behouden.</p><span>€17.00</span><br><button class="order-btn" onclick="addToCart('Madfoon Chicken', 17.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="haneeth-chicken.jpg"><div class="card-info-detailed"><h3>Haneeth chicken</h3><p>Kip langzaam gegaard met traditionele specerijen voor een diepe smaak.</p><span>€14.00</span><br><button class="order-btn" onclick="addToCart('Haneeth Chicken', 14.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="AKDAH-chicken.jpg"><div class="card-info-detailed"><h3>Akdah chicken</h3><p>Fijngehakte kip geroerbakt met verse groenten en Jemenitische kruiden.</p><span>€14.00</span><br><button class="order-btn" onclick="addToCart('Akdah Chicken', 14.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+        </div>
+
+        <h2 class="category-title reveal">FISH DISHES</h2>
+        <div class="grid">
+            <div class="card reveal"><img src="fish-tanoor.jpg"><div class="card-info-detailed"><h3>Fish Tanoor</h3><p>Hele vis gemarineerd en perfect gebakken in de traditionele kleioven (Tanoor).</p><span>€17.00</span><br><button class="order-btn" onclick="addToCart('Fish Tanoor', 17.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="shrimps.jpg"><div class="card-info-detailed"><h3>Sanouna Shrimps</h3><p>Garnalen bereid in een rijke tomatensaus مع uien en oosterse kruiden.</p><span>€16.00</span><br><button class="order-btn" onclick="addToCart('Sanouna Shrimps', 16.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="TUNA.jpg"><div class="card-info-detailed"><h3>TUNA MADARH</h3><p>Tonijn bereid in een traditionele aardewerken pot مع tomaten و pepers.</p><span>€9.00</span><br><button class="order-btn" onclick="addToCart('Tuna Madarh', 9.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="SYAA.jpg"><div class="card-info-detailed"><h3>SYADIYAH FISH</h3><p>Gebakken vis geserveerd met speciaal gekruide bruine rijست en uien.</p><span>€13.00</span><br><button class="order-btn" onclick="addToCart('Syadiyah Fish', 13.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+        </div>
+
+        <h2 class="category-title reveal">DESSERT DISHES</h2>
+        <div class="grid">
+            <div class="card reveal"><img src="FATAH.jpg"><div class="card-info-detailed"><h3>FATTAH DADELS</h3><p>Warm gerecht van fijngehakt brood met dadels, honing و botر.</p><span>€8.00</span><br><button class="order-btn" onclick="addToCart('Fattah Dates', 8.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="FATAH.jpg"><div class="card-info-detailed"><h3>FATTAH BANAAN</h3><p>Zoete combinatie van vers brood, rijpe bananen en honing.</p><span>€8.00</span><br><button class="order-btn" onclick="addToCart('Fattah Banana', 8.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="AREEK.jpg"><div class="card-info-detailed"><h3>AREEKAH</h3><p>Brood, dadels, room, kaas en honing. Een luxe Jemenitische traktatie.</p><span>€9.00</span><br><button class="order-btn" onclick="addToCart('Areekah', 9.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="MASOUB.jpg"><div class="card-info-detailed"><h3>MASOUB</h3><p>Traditioneel bananen-broود dessert, rijk van smaak و vullend.</p><span>€9.00</span><br><button class="order-btn" onclick="addToCart('Masoub', 9.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+        </div>
+
+        <h2 class="category-title reveal">FRESH DRINKS</h2>
+        <div class="grid">
+            <div class="card reveal"><img src="Cocktail-juice.jpg"><div class="card-info"><h3>COCKTAIL JUICE</h3><span>€6.00</span><br><button class="order-btn" onclick="addToCart('Cocktail Juice', 6.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="Arisi.jpg"><div class="card-info"><h3>ARISI MALIKI FRUIT</h3><span>€7.00</span><br><button class="order-btn" onclick="addToCart('Arisi Maliki', 7.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="MIXED.jpg"><div class="card-info"><h3>MIXED FRUIT SALAD</h3><span>€7.00</span><br><button class="order-btn" onclick="addToCart('Mixed Fruit Salad', 7.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="Mango.jpg"><div class="card-info"><h3>MANGO JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Mango Juice', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="mint.jpg"><div class="card-info"><h3>MINT LEMON JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Mint Lemon', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="avocado.jpg"><div class="card-info"><h3>AVOCADO JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Avocado Juice', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="BANA.jpg"><div class="card-info"><h3>BANANA JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Banana Juice', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="PINE.jpg"><div class="card-info"><h3>PINE APPLE KWIW JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Pine Apple Kiwi', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="STRW.jpg"><div class="card-info"><h3>STRAWBERRY JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Strawberry Juice', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="AVOCA.jpg"><div class="card-info"><h3>AVOCADO JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Avocado Juice 2', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="PINEAPP.jpg"><div class="card-info"><h3>PINEAPPLE JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Pineapple Juice', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="WATRML.jpg"><div class="card-info"><h3>WATERMELON JUICE</h3><span>€5.00</span><br><button class="order-btn" onclick="addToCart('Watermelon Juice', 5.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+        </div>
+
+        <h2 class="category-title reveal">Warme Dranken (مشروبات حارة)</h2>
+        <div class="grid">
+            <div class="card reveal"><img src="adani-tea.jpg"><div class="card-info"><h3>ADANI TEA</h3><span style="color:#d35400; font-weight:bold;">€2.00</span><br><button class="order-btn" onclick="addToCart('Adani Tea', 2.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="qahwa.jpg"><div class="card-info"><h3>COFFEE</h3><span style="color:#d35400; font-weight:bold;">€3.00</span><br><button class="order-btn" onclick="addToCart('Coffee', 3.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="PLAIN.jpg"><div class="card-info"><h3>PLAIN TEE</h3><span style="color:#d35400; font-weight:bold;">€2.00</span><br><button class="order-btn" onclick="addToCart('Plain Tea', 2.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="TEAPOT.jpg"><div class="card-info"><h3>TEAPOT</h3><span style="color:#d35400; font-weight:bold;">€8.00</span><br><button class="order-btn" onclick="addToCart('Teapot', 8.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+        </div>
+
+        <h2 class="category-title reveal">Koude Dranken (مشروبات باردة)</h2>
+        <div class="grid">
+            <div class="card reveal"><img src="RED.jpg"><div class="card-info"><h3>RED BULL</h3><span style="color:#d35400; font-weight:bold;">€3.00</span><br><button class="order-btn" onclick="addToCart('Red Bull', 3.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="COLD.jpg"><div class="card-info"><h3>COLD BEVERAGES</h3><span style="color:#d35400; font-weight:bold;">€2.00</span><br><button class="order-btn" onclick="addToCart('Cold Beverages', 2.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="ARAN.jpg"><div class="card-info"><h3>AYRAN MILK</h3><span style="color:#d35400; font-weight:bold;">€2.00</span><br><button class="order-btn" onclick="addToCart('Ayran Milk', 2.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="WATER.jpg"><div class="card-info"><h3>WATER</h3><span style="color:#d35400; font-weight:bold;">€2.00</span><br><button class="order-btn" onclick="addToCart('Water', 2.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="MOHITO.jpg"><div class="card-info"><h3>MOHITO</h3><span style="color:#d35400; font-weight:bold;">€6.00</span><br><button class="order-btn" onclick="addToCart('Mohito', 6.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+            <div class="card reveal"><img src="BARBICAN.jpg"><div class="card-info"><h3>BARBICAN</h3><span style="color:#d35400; font-weight:bold;">€3.00</span><br><button class="order-btn" onclick="addToCart('Barbican', 3.00)" style="background:#ff9800; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-top:10px;">Add to Order</button></div></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

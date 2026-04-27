@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Reserveren | Tayrmanah</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">TAYRMANAH</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container" style="padding-top: 50px;">
+        <h1 class="reveal" style="text-align: center; color: var(--gold); font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 40px;">Contact & Reserveren</h1>
+
+        <div class="contact-container">
+            <div class="contact-info-box reveal">
+                <h2 style="color: var(--gold); margin-bottom: 25px;">Onze Gegevens</h2>
+                
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <p><strong>Adres:</strong></p>
+                        <p>Antwerpen, België</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <p><strong>Telefoon:</strong></p>
+                        <p>+32 470 707 414</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                    <div>
+                        <p><strong>WhatsApp:</strong></p>
+                        <a href="https://wa.me/32470707414" target="_blank" style="color: var(--gold); text-decoration: none; font-weight: bold;">
+                            Direct Berichten (ارسل رسالة)
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <p><strong>E-mail:</strong></p>
+                        <p>Tayrmanah@email.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="booking-form-wrapper reveal">
+                <h2 style="color: var(--gold); margin-bottom: 25px;">Reserveer een Tafel</h2>
+                <form onsubmit="sendBookingEmail(); return false;" class="booking-form">
+                    
+                    <input type="hidden" name="_subject" value="Nieuwe Reservering - Tayrmanah">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="_captcha" value="false">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <input type="text" name="name" placeholder="Uw Naam" required>
+                        <input type="email" name="email" placeholder="Uw E-mail" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <input type="tel" name="phone" placeholder="Telefoonnummer" required>
+                        <input type="number" name="guests" placeholder="Aantal Personen" min="1" required>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; color: var(--gold); margin-bottom: 8px; font-weight: 600;">Type Zitplaats (نوع الجلسة):</label>
+                        <select name="seating_type" style="width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 5px;">
+                            <option value="Standard Table">Standaard Tafel (طاولة عادية)</option>
+                            <option value="Arabic Majlis">Arabische Majlis (مجلس عربي)</option>
+                        </select>
+                    </div>
+
+                    <textarea name="message" rows="4" placeholder="Eventuele speciale wensen (ملاحظات إضافية)..."></textarea>
+
+                    <button type="submit" class="btn btn-gold" style="width: 100%; font-size: 1.1rem; padding: 15px;">
+                        Verstuur Aanvraag
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="map-container reveal">
+           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2497.681024226143!2d4.439953876453263!3d51.24336917175448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c3f7913973665f%3A0xdfd74a2e3d620dec!2sTAYRMANAH%20YEMENI%20RESTAURANT!5e0!3m2!1sen!2s!4v1777330276754!5m2!1sen!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+           </iframe>
+        </div>
+    </div>
+
+    <a href="https://wa.me/32470707414" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <footer>
+        <p>© 2026 TAYRMANAH - Authentic Yemeni Kitchen</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
