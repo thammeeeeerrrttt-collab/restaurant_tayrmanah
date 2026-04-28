@@ -61,37 +61,48 @@
                 </div>
             </div>
 
-            <div class="booking-form-wrapper reveal">
-                <h2 style="color: var(--gold); margin-bottom: 25px;">Reserveer een Tafel</h2>
-                <form onsubmit="sendBookingEmail(); return false;" class="booking-form">
-                    
-                    <input type="hidden" name="_subject" value="Nieuwe Reservering - Tayrmanah">
-                    <input type="hidden" name="_template" value="table">
-                    <input type="hidden" name="_captcha" value="false">
+           <div class="booking-container" style="max-width: 500px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #d35400;">Reserveer een Tafel 📅</h2>
+    
+    <div style="margin-bottom: 15px;">
+        <label>Naam (الاسم):</label>
+        <input type="text" id="res-name" placeholder="Uw naam" style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc;">
+    </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <input type="text" name="name" placeholder="Uw Naam" required>
-                        <input type="email" name="email" placeholder="Uw E-mail" required>
-                    </div>
+    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+        <div style="flex: 1;">
+            <label>Datum (التاريخ):</label>
+            <input type="date" id="res-date" style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc;">
+        </div>
+        <div style="flex: 1;">
+            <label>Tijd (الوقت):</label>
+            <input type="time" id="res-time" style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc;">
+        </div>
+    </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <input type="tel" name="phone" placeholder="Telefoonnummer" required>
-                        <input type="number" name="guests" placeholder="Aantal Personen" min="1" required>
-                    </div>
+    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+        <div style="flex: 1;">
+            <label>Personen (العدد):</label>
+            <input type="number" id="res-guests" value="2" min="1" style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc;">
+        </div>
+        <div style="flex: 1;">
+            <label>Zitplaats (الجلسة):</label>
+            <select id="res-seating" style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc;">
+                <option value="Tafel">Tafel (طاولة)</option>
+                <option value="Zitting">Zitting (جلسة عربية)</option>
+            </select>
+        </div>
+    </div>
 
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; color: var(--gold); margin-bottom: 8px; font-weight: 600;">Type Zitplaats (نوع الجلسة):</label>
-                        <select name="seating_type" style="width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 5px;">
-                            <option value="Standard Table">Standaard Tafel (طاولة عادية)</option>
-                            <option value="Arabic Majlis">Arabische Majlis (مجلس عربي)</option>
-                        </select>
-                    </div>
+    <div style="margin-bottom: 15px;">
+        <label>Bericht (ملاحظات):</label>
+        <textarea id="res-message" placeholder="Extra wensen..." style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc; height: 80px;"></textarea>
+    </div>
 
-                    <textarea name="message" rows="4" placeholder="Eventuele speciale wensen (ملاحظات إضافية)..."></textarea>
-
-                    <button type="submit" class="btn btn-gold" style="width: 100%; font-size: 1.1rem; padding: 15px;">
-                        Verstuur Aanvraag
-                    </button>
+    <button onclick="sendReservationToWhatsApp()" style="width:100%; padding:15px; background:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:1.1rem;">
+        Reserveer via WhatsApp 💬
+    </button>
+</div>
                 </form>
             </div>
         </div>
