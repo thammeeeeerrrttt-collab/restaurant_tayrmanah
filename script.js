@@ -3,18 +3,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const urlParams = new URLSearchParams(window.location.search);
     const tableId = urlParams.get('table'); 
     
-    if (tableId) {
-        const tableInput = document.getElementById('table-number');
-        if (tableInput) {
+    const tableInput = document.getElementById('table-number');
+    if (tableInput) {
+        if (tableId) {
             tableInput.value = tableId;
             tableInput.readOnly = true;
             
             const infoText = document.createElement('p');
-            infoText.innerHTML = `📍 <b>Tafel: ${tableId}</b>`;
-            infoText.style.color = "#d35400";
+            infoText.innerHTML = `📍 <b>Tafel: ${tableId}</b> (Bevestigd)`;
+            infoText.style.color = "#28a745"; 
             infoText.style.fontSize = "14px";
-            infoText.style.marginBottom = "5px";
             tableInput.parentNode.insertBefore(infoText, tableInput);
+        } else {
+            tableInput.value = ""; 
+            tableInput.placeholder = "Scan QR Code first!";
         }
     }
 });
@@ -51,7 +53,6 @@ function addToCart(name, price) {
     }
 }
 
-// تحديث عداد السلة العائم
 function updateCartCount() {
     const cartCount = document.getElementById('cart-count');
     if (cartCount) { cartCount.innerText = cart.length; }
@@ -61,7 +62,7 @@ function updateCartCount() {
 function removeFromCart(index) {
     cart.splice(index, 1);
     updateCartCount();
-    openCart(); // إعادة فتح السلة لتحديث القائمة
+    openCart();
 }
 
 // 5. فتح السلة وتحديث البيانات بداخلها
@@ -99,20 +100,31 @@ function closeCart() {
     document.getElementById('cart-container').style.display = 'none';
 }
 
-// 7. 🔥 إرسال واتساب (معدل ليتوافق مع السلة الجديدة)
-function sendToWhatsApp() {
+// 7. 🔥 إرسال واتساب + تحميل فاتورة PDF تلقائياً
+async function sendToWhatsApp() {
+    let tableNumber = document.getElementById("table-number")?.value;
+
+    // شرط الحماية: يجب وجود رقم طاولة
+    if (!tableNumber || tableNumber.trim() === "") {
+        alert("⚠️ يرجى أن تكون في المطعم لتأكيد طلبك عبر مسح الكود الموجود على الطاولة.\nOm uw bestelling te plaatsen, moet u de QR-code scannen.");
+        return;
+    }
+
     if (cart.length === 0) {
         alert("Please add items first!");
         return;
     }
 
-    let tableNumber = document.getElementById("table-number")?.value || "Not selected";
+    // أولاً: توليد وتحميل ملف PDF باسم الطاولة
+    await generatePDF();
+
+    // ثانياً: تجهيز وإرسال رسالة الواتساب
     let notes = document.getElementById("order-notes")?.value || "None";
     let total = 0;
 
     let message = `🍽️ *New Order - Tayrmanah*%0A`;
-    message += `*Table:* ${tableNumber}%0A`;
-    message += `*Notes:* ${notes}%0A%0A`;
+    message += `📍 *Table:* ${tableNumber}%0A`;
+    message += `📝 *Notes:* ${notes}%0A%0A`;
     message += `*Items:*%0A`;
 
     cart.forEach((item, index) => {
@@ -121,18 +133,17 @@ function sendToWhatsApp() {
     });
 
     message += `%0A💰 *Total: ${total.toFixed(2)} EUR*`;
+    message += `%0A%0A📄 _De factuur is gedownload op mijn apparaat._`;
 
     let phoneNumber = "32470707414"; 
     let url = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(url, "_blank");
 }
 
-// 8. PDF الفاتورة
+// 8. PDF الفاتورة (معدلة لتعمل مع الإرسال)
 async function generatePDF() {
-    if (cart.length === 0) {
-        alert("Please add items first!");
-        return;
-    }
+    if (cart.length === 0) return;
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: [80, 160] });
 
@@ -140,7 +151,7 @@ async function generatePDF() {
     doc.setFontSize(14);
     doc.text("TAYRMANAH", 40, 20, { align: "center" });
 
-    let tableNumber = document.getElementById("table-number")?.value || "-";
+    let tableNumber = document.getElementById("table-number")?.value || "Unknown";
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text(`Table: ${tableNumber}`, 5, 35);
@@ -159,9 +170,12 @@ async function generatePDF() {
     doc.setFont("helvetica", "bold");
     doc.text(`TOTAL: ${total.toFixed(2)} EUR`, 75, y + 10, { align: "right" });
 
+    // حفظ الملف برقم الطاولة
     doc.save(`Order_Table_${tableNumber}.pdf`);
-}function sendReservationToWhatsApp() {
-    // جلب البيانات من الحقول
+}
+
+// 9. حجز الطاولات
+function sendReservationToWhatsApp() {
     const name = document.getElementById('res-name').value;
     const date = document.getElementById('res-date').value;
     const time = document.getElementById('res-time').value;
@@ -169,13 +183,11 @@ async function generatePDF() {
     const seating = document.getElementById('res-seating').value;
     const message = document.getElementById('res-message').value;
 
-    // التحقق من تعبئة البيانات الأساسية
     if (!name || !date || !time) {
         alert("Vul alstublieft uw naam, datum en tijd in.");
         return;
     }
 
-    // تجهيز الرسالة
     let whatsappMessage = `📅 *NIEUWE RESERVERING - TAYRMANAH*%0A`;
     whatsappMessage += `--------------------------%0A`;
     whatsappMessage += `*Naam:* ${name}%0A`;
@@ -190,10 +202,7 @@ async function generatePDF() {
     whatsappMessage += `--------------------------%0A`;
     whatsappMessage += `Graag een bevestiging, bedankt!`;
 
-    // رقم الواتساب (تأكد من أنه نفس الرقم البلجيكي الخاص بك)
     const phoneNumber = "32470707414"; 
-
-    // فتح الواتساب
     const url = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
     window.open(url, "_blank");
 }
