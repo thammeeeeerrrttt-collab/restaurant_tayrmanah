@@ -22,6 +22,25 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 let cart = [];
+let pendingItem = null; // لتخزين الصنف مؤقتاً عند اختيار مستوى السبايسي
+
+// قائمة الأصناف التي تتطلب خيار السبايسي (تم تحديثها لتطابق أسماء الـ HTML بدقة)
+const spicyItems = [
+    "Fahsa", 
+    "Saltah", 
+    "Sanouna Shrimps", 
+    "Lamb Liver", 
+    "Shakshouka", 
+    "Shakshouka Cheese",
+    "Mglgl Meat", 
+    "Vegetable Stew", 
+    "Dry Beans", 
+    "Wet Beans", 
+    "Foul Madarh", 
+    "Akdah Meat",
+    "Akdah Chicken",
+    "Mglgl Hummus"
+];
 
 // 2. حركة الظهور عند التمرير
 document.addEventListener("DOMContentLoaded", function () {
@@ -40,17 +59,52 @@ document.addEventListener("DOMContentLoaded", function () {
     revealOnScroll();
 });
 
-// 3. إضافة للسلة
+// 3. إضافة للسلة (المعدلة لدعم السبايسي)
 function addToCart(name, price) {
-    cart.push({ name, price });
+    // إذا كان الصنف ضمن القائمة المحروقة/السبايسي
+    if (spicyItems.includes(name)) {
+        pendingItem = { name, price };
+        const modal = document.getElementById('spicy-modal');
+        if (modal) {
+            modal.style.display = 'block';
+        } else {
+            // إذا لم تجد النافذة في HTML، أضف الصنف مباشرة لتجنب التوقف
+            executeAddToCart(name, price, "");
+        }
+    } else {
+        // إضافة عادية للأصناف الأخرى (أرز، مشروبات، إلخ)
+        executeAddToCart(name, price, "");
+    }
+}
+
+// دالة تنفيذ الإضافة الفعلية للسلة
+function executeAddToCart(name, price, spiceLevel) {
+    const finalName = spiceLevel ? `${name} (${spiceLevel})` : name;
+    cart.push({ name: finalName, price: price });
     updateCartCount();
 
-    if (event && event.target) {
+    // إغلاق نافذة السبايسي
+    closeSpicyModal();
+
+    // تنبيه بصري على الزر
+    if (event && event.target && event.target.tagName === "BUTTON") {
         const btn = event.target;
         const originalText = btn.innerText;
         btn.innerText = "Added! ✅";
         setTimeout(() => { btn.innerText = originalText; }, 1000);
     }
+}
+
+function selectSpice(level) {
+    if (pendingItem) {
+        executeAddToCart(pendingItem.name, pendingItem.price, level);
+        pendingItem = null;
+    }
+}
+
+function closeSpicyModal() {
+    const modal = document.getElementById('spicy-modal');
+    if (modal) modal.style.display = 'none';
 }
 
 function updateCartCount() {
@@ -104,7 +158,6 @@ function closeCart() {
 async function sendToWhatsApp() {
     let tableNumber = document.getElementById("table-number")?.value;
 
-    // شرط الحماية: يجب وجود رقم طاولة
     if (!tableNumber || tableNumber.trim() === "") {
         alert("⚠️ يرجى أن تكون في المطعم لتأكيد طلبك عبر مسح الكود الموجود على الطاولة.\nOm uw bestelling te plaatsen, moet u de QR-code scannen.");
         return;
@@ -115,10 +168,8 @@ async function sendToWhatsApp() {
         return;
     }
 
-    // أولاً: توليد وتحميل ملف PDF باسم الطاولة
     await generatePDF();
 
-    // ثانياً: تجهيز وإرسال رسالة الواتساب
     let notes = document.getElementById("order-notes")?.value || "None";
     let total = 0;
 
@@ -133,14 +184,14 @@ async function sendToWhatsApp() {
     });
 
     message += `%0A💰 *Total: ${total.toFixed(2)} EUR*`;
-    message += `%0A%0A📄 _De factuur is gedownload op mijn apparaat._`;
+    message += `%0A%0A📄 _De factuur is gedownload._`;
 
     let phoneNumber = "32470707414"; 
     let url = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(url, "_blank");
 }
 
-// 8. PDF الفاتورة (معدلة لتعمل مع الإرسال)
+// 8. PDF الفاتورة
 async function generatePDF() {
     if (cart.length === 0) return;
 
@@ -170,7 +221,6 @@ async function generatePDF() {
     doc.setFont("helvetica", "bold");
     doc.text(`TOTAL: ${total.toFixed(2)} EUR`, 75, y + 10, { align: "right" });
 
-    // حفظ الملف برقم الطاولة
     doc.save(`Order_Table_${tableNumber}.pdf`);
 }
 
@@ -205,4 +255,32 @@ function sendReservationToWhatsApp() {
     const phoneNumber = "32470707414"; 
     const url = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
     window.open(url, "_blank");
+}
+// 10. كود إدارة ملفات تعريف الارتباط (Cookies)
+document.addEventListener("DOMContentLoaded", function() {
+    // تحقق إذا كان المستخدم قد وافق مسبقاً
+    if (!localStorage.getItem("cookieConsent")) {
+        setTimeout(() => {
+            document.getElementById("cookie-banner").style.display = "block";
+        }, 2000); // تظهر بعد ثانيتين من تحميل الصفحة
+    }
+});
+
+function handleCookies(status) {
+    // حفظ الخيار في الـ Local Storage
+    localStorage.setItem("cookieConsent", status);
+    
+    // إخفاء الرسالة مع حركة بسيطة
+    const banner = document.getElementById("cookie-banner");
+    banner.style.transition = "opacity 0.5s ease";
+    banner.style.opacity = "0";
+    
+    setTimeout(() => {
+        banner.style.display = "none";
+    }, 500);
+
+    if (status === 'accepted') {
+        console.log("User accepted cookies.");
+        // هنا يمكنك تفعيل أدوات التحليل مثل Google Analytics إذا كانت موجودة
+    }
 }
